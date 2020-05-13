@@ -239,7 +239,7 @@ macro AutoExpand()
     language = getreg(LANGUAGE)
     if(language != 1)
     {
-        language = 0
+        language = 1 //始终使用英文
     }
     nVer = 0
     nVer = GetVersion()
@@ -2548,7 +2548,7 @@ macro GetFunctionDef(hbuf,symbol)
 		szLine = RetVal.szContent
 		szLine = TrimString(szLine)
 		fIsEnd = RetVal.fIsEnd
-        //如果是{表示函数参数头结束了
+        //如果是'{'表示函数参数头结束了
         ret = strstr(szLine,"{")        
         if(ret != 0xffffffff)
         {
@@ -2686,7 +2686,7 @@ macro FuncHeadCommentCN(hbuf, ln, szFunc, szMyName,newFunc)
 	ln = ln +1
     InsBufLine(hbuf, ln+2, "*")
 
-    szIns = "*\@param "
+    szIns = "*\@param[in]: "
     if(newFunc != 1)
     {
         //对于已经存在的函数插入函数参数
@@ -2711,10 +2711,10 @@ macro FuncHeadCommentCN(hbuf, ln, szFunc, szMyName,newFunc)
     if(iIns == 0)
     {       
             ln = ln + 1
-            InsBufLine(hbuf, ln+2, "*\@param none")
+            InsBufLine(hbuf, ln+2, "*\@param[in]: none")
     }
     InsBufLine(hbuf, ln+3, "*")
-    InsBufLine(hbuf, ln+4, "*\@return @szRet@")
+    InsBufLine(hbuf, ln+4, "*\@return: @szRet@")
     InsbufLIne(hbuf, ln+5, "* ");
     InsBufLine(hbuf, ln+6, "*")
     SysTime = GetSysTime(1);
@@ -2722,17 +2722,17 @@ macro FuncHeadCommentCN(hbuf, ln, szFunc, szMyName,newFunc)
 
     if( strlen(szMyName)>0 )
     {
-       InsBufLine(hbuf, ln+7, "*\@author @szMyName@")
+       InsBufLine(hbuf, ln+7, "*\@author: @szMyName@")
     }
     else
     {
-       InsBufLine(hbuf, ln+7, "*\@author #")
+       InsBufLine(hbuf, ln+7, "*\@author: #")
     }
 
-    InsBufLine(hbuf, ln+8, "*\@date @szTime@")
+    InsBufLine(hbuf, ln+8, "*\@date: @szTime@")
 
 
-    InsBufLine(hbuf, ln+9, "*\@note 新生成函数")    
+    InsBufLine(hbuf, ln+9, "*\@note ")    
     InsBufLine(hbuf, ln+10, "*")    
     InsBufLine(hbuf, ln+11, "*/")
     if ((newFunc == 1) && (strlen(szFunc)>0))
@@ -3487,7 +3487,7 @@ macro GetWordLeftOfIch(ich, sz)
              &&  (ch != "#") )
             break // stop at first non-identifier character
 */
-        //只提取字符和# { / *作为命令
+        //只提取字符和'#','{','/','*'作为命令
         if ((asciiCh < asciiA || asciiCh > asciiZ) 
            && !IsNumber(ch)
            && ( ch != "#" && ch != "{" && ch != "/" && ch != "*"))
